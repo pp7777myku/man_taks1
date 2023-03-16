@@ -1,0 +1,35 @@
+import drools.Account
+
+rule "Buy"
+    when
+        account : Account(account.money > 0)
+    then
+        int itemPrice = 5;
+        int items = account.money / itemPrice;
+        int spent = items * itemPrice;
+        account.items += items;
+        account.money -= spent;
+        System.out.println("Buy " + items + " items for " + spent);
+        int points = spent < 100 ? 0 : spent < 500 ? 100 : spent < 1000 ? 500 : 1000;
+        account.points += points;
+        System.out.println("Receive " + points + " bonus points");
+end
+
+rule "Redeem"
+    when
+        account : Account(account.points > 0)
+    then
+        int itemPrice = 25;
+        int items = account.points / itemPrice;
+        int spent = items * itemPrice;
+        account.items += items;
+        account.points -= spent;
+        System.out.println("Spent " + spent + " points and received " + items + " items");
+end
+
+rule "Stats"
+    when
+        account : Account()
+    then
+        System.out.println("Your money now: " + account.money + ", items: " + account.items + ", points: " + account.points);
+end
